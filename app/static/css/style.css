@@ -610,20 +610,20 @@ body::before {
   height: 3px;
   background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
   width: 0;
+  opacity: 0;
   z-index: 1000;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, opacity 0.3s ease;
 }
 
 .animate-progress {
-  animation: progressGrow 3s ease-in-out forwards;
+  animation: progressGrow 2s ease-in-out forwards;
 }
 
 @keyframes progressGrow {
-  0% { width: 0; }
-  20% { width: 20%; }
-  50% { width: 60%; }
-  80% { width: 85%; }
-  100% { width: 100%; }
+  0% { width: 0; opacity: 1; }
+  30% { width: 45%; opacity: 1; }
+  70% { width: 80%; opacity: 1; }
+  100% { width: 100%; opacity: 1; }
 }
 
 .hidden {

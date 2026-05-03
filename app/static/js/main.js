@@ -72,15 +72,15 @@ document.addEventListener('DOMContentLoaded', function () {
     progressBar.classList.remove('animate-progress');
     progressBar.style.width = '0';
     void progressBar.offsetWidth;
+    progressBar.style.opacity = '1';
     progressBar.classList.add('animate-progress');
   }
 
   function hideLoading() {
     progressBar.classList.remove('animate-progress');
+    progressBar.style.transition = 'width 0.3s ease-out, opacity 0.3s ease-out';
     progressBar.style.width = '100%';
-    setTimeout(() => {
-      progressBar.style.width = '0';
-    }, 300);
+    progressBar.style.opacity = '0';
   }
 
   function animateProbBars() {
