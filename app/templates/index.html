@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>面部与舌象健康识别系统</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h1>面部与舌象健康识别系统</h1>
+  <p class="subtitle">基于 MobileNet 与 Flask 的轻量化多模态健康状态判别</p>
+
+  <form id="upload-form">
+    <div class="upload-group">
+      <label>面部图片：</label>
+      <input type="file" name="face_image" id="face_image" accept="image/*" required>
+    </div>
+    <div class="upload-group">
+      <label>舌象图片：</label>
+      <input type="file" name="tongue_image" id="tongue_image" accept="image/*" required>
+    </div>
+    <button type="submit" id="submit-btn">开始识别</button>
+  </form>
+
+  <div id="upload-previews" class="previews hidden">
+    <h2>已上传图片预览</h2>
+    <div class="preview-row">
+      <div class="preview-item">
+        <p class="preview-title">面部图片</p>
+        <img id="face-preview" class="preview-img" alt="face preview" />
+      </div>
+      <div class="preview-item">
+        <p class="preview-title">舌象图片</p>
+        <img id="tongue-preview" class="preview-img" alt="tongue preview" />
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="result hidden">
+    <h2>识别结果</h2>
+    <p id="label"></p>
+    <div id="probabilities"></div>
+  </div>
+
+  <div id="message" class="message"></div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
