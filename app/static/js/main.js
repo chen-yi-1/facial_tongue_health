@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const tonguePreviewImg = document.getElementById('tongue-preview');
   const faceInput = document.getElementById('face_image');
   const tongueInput = document.getElementById('tongue_image');
+  const progressBar = document.getElementById('analyze-progress');
 
   let faceObjectUrl = null;
   let tongueObjectUrl = null;
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
       area.classList.remove('has-file');
       return;
     }
-    
+
     if (objUrlRef.value) URL.revokeObjectURL(objUrlRef.value);
     objUrlRef.value = URL.createObjectURL(file);
     previewImg.src = objUrlRef.value;
@@ -67,6 +68,21 @@ document.addEventListener('DOMContentLoaded', function () {
   setupDragDrop(faceArea, faceInput, facePreviewImg, { value: faceObjectUrl });
   setupDragDrop(tongueArea, tongueInput, tonguePreviewImg, { value: tongueObjectUrl });
 
+  function showLoading() {
+    progressBar.classList.remove('animate-progress');
+    progressBar.style.width = '0';
+    void progressBar.offsetWidth;
+    progressBar.classList.add('animate-progress');
+  }
+
+  function hideLoading() {
+    progressBar.classList.remove('animate-progress');
+    progressBar.style.width = '100%';
+    setTimeout(() => {
+      progressBar.style.width = '0';
+    }, 300);
+  }
+
   function animateProbBars() {
     const fills = document.querySelectorAll('.prob-fill');
     fills.forEach((fill, index) => {
@@ -83,22 +99,44 @@ document.addEventListener('DOMContentLoaded', function () {
     msgDiv.textContent = '';
     msgDiv.classList.remove('hidden');
     resultDiv.classList.add('hidden');
+    probDiv.innerHTML = '';
+
+    const skeletonHTML = `
+      <div class="prob-item" style="opacity: 1; transform: none;">
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-bar"></div>
+      </div>
+      <div class="prob-item" style="opacity: 1; transform: none;">
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-bar"></div>
+      </div>
+      <div class="prob-item" style="opacity: 1; transform: none;">
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-bar"></div>
+      </div>
+    `;
+    probDiv.innerHTML = skeletonHTML;
+    resultDiv.classList.remove('hidden');
 
     const formData = new FormData(form);
 
     submitBtn.disabled = true;
     submitBtn.classList.add('loading');
 
+    showLoading();
+
     fetch('/predict', {
       method: 'POST',
       body: formData
     }).then(resp => resp.json())
       .then(data => {
+        hideLoading();
         submitBtn.disabled = false;
         submitBtn.classList.remove('loading');
 
         if (!data.success) {
           msgDiv.textContent = data.msg || '识别失败，请重试。';
+          resultDiv.classList.add('hidden');
           return;
         }
 
@@ -106,13 +144,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         probDiv.innerHTML = '';
         const probs = data.probabilities || {};
-        
-        Object.keys(probs).forEach(key => {
+
+        Object.keys(probs).forEach((key, index) => {
           const value = (probs[key] * 100).toFixed(2);
-          
+
           const item = document.createElement('div');
           item.className = 'prob-item';
-          
+          item.style.animationDelay = `${index * 100}ms`;
+
           item.innerHTML = `
             <div class="prob-label-row">
               <span class="prob-label">${key}</span>
@@ -122,19 +161,19 @@ document.addEventListener('DOMContentLoaded', function () {
               <div class="prob-fill" data-width="${value}"></div>
             </div>
           `;
-          
+
           probDiv.appendChild(item);
         });
 
-        resultDiv.classList.remove('hidden');
-        
         setTimeout(animateProbBars, 100);
       })
       .catch(err => {
         console.error(err);
+        hideLoading();
         submitBtn.disabled = false;
         submitBtn.classList.remove('loading');
         msgDiv.textContent = '请求异常，请检查后端是否启动。';
+        resultDiv.classList.add('hidden');
       });
   });
 });
