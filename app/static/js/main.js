@@ -78,9 +78,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function hideLoading() {
     progressBar.classList.remove('animate-progress');
-    progressBar.style.transition = 'width 0.3s ease-out, opacity 0.3s ease-out';
+    progressBar.style.transition = 'width 0.3s ease-out';
     progressBar.style.width = '100%';
-    progressBar.style.opacity = '0';
+    setTimeout(() => {
+      progressBar.style.transition = 'opacity 0.3s ease-out';
+      progressBar.style.opacity = '0';
+    }, 300);
   }
 
   function animateProbBars() {
