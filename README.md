@@ -80,7 +80,7 @@ python app.py
 
 5. 浏览器访问 `http://127.0.0.1:5000` 进行测试。
 
-## 四点五、数据整理（公开数据集落地到 data/）
+## 五、数据整理（公开数据集落地到 data/）
 
 如果你从 Kaggle / GitHub / Dryad 下载的数据集目录结构与本项目不一致，可使用脚本一键整理并划分训练/验证集：
 
@@ -116,7 +116,7 @@ python scripts/prepare_face_from_kaggle.py --kaggle_root D:\clone\workspace\data
 python scripts/prepare_tongue_from_kaggle.py --kaggle_root D:\clone\workspace\datasets_raw\kaggle --out_data_root D:\clone\workspace\facial_tongue_health\data --healthy_n 1000 --subhealthy_n 600 --unhealthy_n 600
 ```
 
-## 四点六、公开数据下载（推荐：Dryad 舌象 + Kaggle 面部）
+## 六、公开数据下载（推荐：Dryad 舌象 + Kaggle 面部）
 
 ### 1）下载 Dryad 舌象（无需登录）
 
@@ -141,7 +141,7 @@ Kaggle 不需要申请权限，但需要一次性配置 API Token：
 python scripts/download_public_datasets.py
 ```
 
-## 五、与论文写作的对应关系
+## 七、与论文写作的对应关系
 
 - **选题依据与意义**：对应 README 中的项目目标与背景描述，可在论文绪论部分扩展。
 - **研究内容与方法**：对应 `train.py`、`models/mobilenet_multimodal.py`、`app/` 中的代码实现。
