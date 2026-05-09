@@ -1,6 +1,7 @@
 import sys
+from pathlib import Path
 
-sys.path.insert(0, r"D:\clone\workspace\facial_tongue_health")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import train  # noqa: E402
 

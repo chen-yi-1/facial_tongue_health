@@ -99,7 +99,7 @@ def make_paired_dataset(face_root: Path, tongue_root: Path, subset: str, batch_s
     return ds, labels
 
 
-def build_single_mobilenet(name_prefix: str, trainable_backbone: bool, backbone_version: str = "v2") -> Model:
+def build_backbone(prefix: str, trainable_backbone: bool, backbone_version: str = "v2") -> Tuple:
     backbone_version = backbone_version.lower()
     if backbone_version == "v2":
         base = MobileNetV2(
@@ -125,13 +125,18 @@ def build_single_mobilenet(name_prefix: str, trainable_backbone: bool, backbone_
         raise ValueError(f"unsupported backbone_version: {backbone_version}")
 
     base.trainable = trainable_backbone
-    base._name = f"{name_prefix}_{base_name}"
+    base._name = f"{prefix}_{base_name}"
     for layer in base.layers:
-        layer._name = f"{name_prefix}_{layer.name}"
+        layer._name = f"{prefix}_{layer.name}"
 
-    inp = layers.Input(shape=IMAGE_SIZE + (3,), name=f"{name_prefix}_input")
+    inp = layers.Input(shape=IMAGE_SIZE + (3,), name=f"{prefix}_input")
     x = pre_fn(inp)
     x = base(x)
+    return inp, x, model_suffix
+
+
+def build_single_mobilenet(name_prefix: str, trainable_backbone: bool, backbone_version: str = "v2") -> Model:
+    inp, x, model_suffix = build_backbone(name_prefix, trainable_backbone, backbone_version)
     x = layers.Dense(256, activation="relu")(x)
     x = layers.Dropout(0.5)(x)
     out = layers.Dense(NUM_CLASSES, activation="softmax", name="predictions")(x)
@@ -139,44 +144,8 @@ def build_single_mobilenet(name_prefix: str, trainable_backbone: bool, backbone_
 
 
 def build_multimodal(trainable_backbone: bool, backbone_version: str = "v2") -> Model:
-    # 用与项目一致的结构，但不依赖其它模块，保证脚本自包含可复现
-    backbone_version = backbone_version.lower()
-
-    def backbone(prefix: str):
-        if backbone_version == "v2":
-            base = MobileNetV2(
-                input_shape=IMAGE_SIZE + (3,),
-                include_top=False,
-                weights="imagenet",
-                pooling="avg",
-            )
-            pre_fn = preprocess_input
-            base_name = "mobilenet_v2"
-            model_suffix = "v2"
-        elif backbone_version == "v3":
-            base = MobileNetV3Small(
-                input_shape=IMAGE_SIZE + (3,),
-                include_top=False,
-                weights="imagenet",
-                pooling="avg",
-            )
-            pre_fn = preprocess_input_v3
-            base_name = "mobilenet_v3_small"
-            model_suffix = "v3"
-        else:
-            raise ValueError(f"unsupported backbone_version: {backbone_version}")
-
-        base.trainable = trainable_backbone
-        base._name = f"{prefix}_{base_name}"
-        for layer in base.layers:
-            layer._name = f"{prefix}_{layer.name}"
-        inp = layers.Input(shape=IMAGE_SIZE + (3,), name=f"{prefix}_input")
-        x = pre_fn(inp)
-        x = base(x)
-        return inp, x, model_suffix
-
-    face_in, face_feat, model_suffix = backbone("face")
-    tongue_in, tongue_feat, _ = backbone("tongue")
+    face_in, face_feat, model_suffix = build_backbone("face", trainable_backbone, backbone_version)
+    tongue_in, tongue_feat, _ = build_backbone("tongue", trainable_backbone, backbone_version)
     merged = layers.Concatenate(name="feature_concat")([face_feat, tongue_feat])
     x = layers.Dense(256, activation="relu")(merged)
     x = layers.Dropout(0.5)(x)

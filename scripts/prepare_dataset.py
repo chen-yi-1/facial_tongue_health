@@ -1,41 +1,17 @@
 import argparse
-import os
 import random
 import shutil
+import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-
-IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
-
-
-def is_image(p: Path) -> bool:
-    return p.is_file() and p.suffix.lower() in IMG_EXTS
-
-
-def safe_mkdir(p: Path) -> None:
-    p.mkdir(parents=True, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import ensure_dir, IMG_EXTS, list_images, split_paths
 
 
 def copy_file(src: Path, dst: Path) -> None:
-    safe_mkdir(dst.parent)
+    ensure_dir(dst.parent)
     shutil.copy2(src, dst)
-
-
-def list_images(root: Path) -> List[Path]:
-    if not root.exists():
-        return []
-    return [p for p in root.rglob("*") if is_image(p)]
-
-
-def split_paths(paths: List[Path], val_ratio: float, seed: int) -> Tuple[List[Path], List[Path]]:
-    rng = random.Random(seed)
-    paths = list(paths)
-    rng.shuffle(paths)
-    n_val = int(len(paths) * val_ratio)
-    val = paths[:n_val]
-    train = paths[n_val:]
-    return train, val
 
 
 def build_mapping_from_args(mapping_args: List[str]) -> Dict[str, str]:

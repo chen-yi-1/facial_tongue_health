@@ -1,51 +1,13 @@
 import argparse
 import random
-import shutil
+import sys
 from pathlib import Path
-from typing import Iterable, List, Tuple
+from typing import List, Tuple
 
 from PIL import Image, ImageEnhance
 
-
-IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
-
-
-def list_images(root: Path) -> List[Path]:
-    if not root.exists():
-        return []
-    out: List[Path] = []
-    for p in root.rglob("*"):
-        if p.is_file() and p.suffix.lower() in IMG_EXTS:
-            out.append(p)
-    return out
-
-
-def split(paths: List[Path], val_ratio: float, seed: int) -> Tuple[List[Path], List[Path]]:
-    rng = random.Random(seed)
-    paths = list(paths)
-    rng.shuffle(paths)
-    n_val = int(len(paths) * val_ratio)
-    return paths[n_val:], paths[:n_val]
-
-
-def copy_many(paths: Iterable[Path], dst_dir: Path, prefix: str) -> int:
-    dst_dir.mkdir(parents=True, exist_ok=True)
-    n = 0
-    for p in paths:
-        ext = p.suffix.lower()
-        dst = dst_dir / f"{prefix}_{n:06d}{ext}"
-        shutil.copy2(p, dst)
-        n += 1
-    return n
-
-
-def take_sample(paths: List[Path], k: int, seed: int) -> List[Path]:
-    if k <= 0:
-        return []
-    rng = random.Random(seed)
-    if k >= len(paths):
-        return list(paths)
-    return rng.sample(paths, k)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from common import copy_many, list_images, split_paths, take_sample
 
 
 def augment_image(src: Path, dst: Path, seed: int) -> None:
@@ -117,9 +79,9 @@ def main():
     subhealthy_imgs = take_sample(subhealthy_pool, args.subhealthy_n, seed=args.seed + 1)
     unhealthy_imgs = take_sample(unhealthy_pool, args.unhealthy_n, seed=args.seed + 2)
 
-    healthy_tr, healthy_val = split(healthy_imgs, val_ratio=args.val_ratio, seed=args.seed)
-    sub_tr, sub_val = split(subhealthy_imgs, val_ratio=args.val_ratio, seed=args.seed)
-    un_tr, un_val = split(unhealthy_imgs, val_ratio=args.val_ratio, seed=args.seed)
+    healthy_tr, healthy_val = split_paths(healthy_imgs, val_ratio=args.val_ratio, seed=args.seed)
+    sub_tr, sub_val = split_paths(subhealthy_imgs, val_ratio=args.val_ratio, seed=args.seed)
+    un_tr, un_val = split_paths(unhealthy_imgs, val_ratio=args.val_ratio, seed=args.seed)
 
     copy_many(healthy_tr, out_root / "train" / "healthy", "healthy")
     copy_many(healthy_val, out_root / "val" / "healthy", "healthy")
