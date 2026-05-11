@@ -20,6 +20,8 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 from models.mobilenet_multimodal import IMAGE_SIZE  # noqa: E402
+from app.advice_rules import get_rule_advice  # noqa: E402
+from app.advice_ai import generate_ai_advice  # noqa: E402
 
 app = Flask(
     __name__,
@@ -108,8 +110,30 @@ def predict():
         "face_image_url": face_image_url,
         "tongue_image_url": tongue_image_url,
         "probabilities": {name: float(p) for name, p in zip(CLASS_NAMES, prob)},
+        "advice": {
+            "rule": get_rule_advice(label),
+        },
     }
     return jsonify(result)
+
+
+@app.route("/advice/ai", methods=["POST"])
+def advice_ai():
+    data = request.get_json(force=True)
+    label = data.get("label", "")
+    probabilities = data.get("probabilities", {})
+
+    if not label:
+        return jsonify({"success": False, "msg": "缺少 label 参数"}), 400
+
+    ai_result = generate_ai_advice(label, probabilities)
+    if "error" in ai_result:
+        return jsonify({"success": False, "msg": ai_result["error"]}), 500
+
+    return jsonify({
+        "success": True,
+        "advice": {"ai": ai_result},
+    })
 
 
 @app.route("/uploads/<path:filename>", methods=["GET"])
