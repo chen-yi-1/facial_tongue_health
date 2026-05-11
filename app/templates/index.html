@@ -83,6 +83,31 @@
           <div id="probabilities" class="probabilities"></div>
         </div>
       </div>
+
+      <div id="advice-section" class="advice-section hidden">
+        <div class="advice-header">
+          <svg class="advice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <h2>生活建议</h2>
+        </div>
+
+        <div class="advice-tabs">
+          <button class="advice-tab active" data-tab="rule" id="tab-rule">标准建议</button>
+          <button class="advice-tab" data-tab="ai" id="tab-ai" disabled>
+            AI 建议
+            <span class="tab-loading" id="ai-loading"></span>
+          </button>
+        </div>
+
+        <div class="advice-content" id="advice-rule">
+          <div class="advice-grid" id="rule-grid"></div>
+        </div>
+
+        <div class="advice-content hidden" id="advice-ai">
+          <div class="advice-grid" id="ai-grid"></div>
+        </div>
+      </div>
     </main>
 
     <footer class="footer">
