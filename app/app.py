@@ -20,8 +20,13 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 from models.mobilenet_multimodal import IMAGE_SIZE  # noqa: E402
-from app.advice_rules import get_rule_advice  # noqa: E402
-from app.advice_ai import generate_ai_advice  # noqa: E402
+
+try:
+    from app.advice_rules import get_rule_advice  # noqa: E402
+    from app.advice_ai import generate_ai_advice  # noqa: E402
+except ModuleNotFoundError:
+    from advice_rules import get_rule_advice  # noqa: E402
+    from advice_ai import generate_ai_advice  # noqa: E402
 
 app = Flask(
     __name__,
