@@ -698,3 +698,148 @@ body::before {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
+
+/* ========== 生活建议模块 ========== */
+
+.advice-section {
+  margin-top: 36px;
+  padding-top: 36px;
+  border-top: 1px solid var(--color-border-light);
+  animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.advice-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.advice-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--color-secondary);
+}
+
+.advice-header h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Tab 切换栏 */
+.advice-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  padding: 4px;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+}
+
+.advice-tab {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.advice-tab:hover:not(:disabled) {
+  color: var(--color-primary);
+  background: rgba(13, 148, 136, 0.06);
+}
+
+.advice-tab.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.advice-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab-loading {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.advice-tab.loading .tab-loading {
+  display: inline-block;
+}
+
+/* 建议网格 */
+.advice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.advice-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: var(--transition-base);
+}
+
+.advice-card:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.advice-card:last-child:nth-child(odd) {
+  grid-column: span 2;
+}
+
+.advice-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.advice-card-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.advice-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.advice-card-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .advice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .advice-card:last-child:nth-child(odd) {
+    grid-column: span 1;
+  }
+}
