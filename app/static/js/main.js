@@ -104,7 +104,8 @@ document.addEventListener('DOMContentLoaded', function () {
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    msgDiv.textContent = '';
+    document.getElementById('panel-empty').classList.add('hidden');
+    msgDiv.textContent = '正在分析，请稍候...';
     msgDiv.classList.remove('hidden');
     resultDiv.classList.add('hidden');
     probDiv.innerHTML = '';
@@ -148,6 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
         }
 
+        msgDiv.classList.add('hidden');
         labelP.textContent = data.label;
 
         // 渲染生活建议

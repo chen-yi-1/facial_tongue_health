@@ -78,7 +78,7 @@ body::before {
 .container {
   background: var(--color-surface);
   width: 100%;
-  max-width: 780px;
+  max-width: 1120px;
   padding: 56px 48px;
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lg);
@@ -163,6 +163,10 @@ body::before {
 }
 
 .main-content {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 40px;
+  align-items: start;
   animation: fadeIn 0.8s ease-out 0.2s both;
 }
 
@@ -408,9 +412,6 @@ body::before {
 }
 
 .result {
-  margin-top: 36px;
-  padding-top: 36px;
-  border-top: 1px solid var(--color-border-light);
   animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -702,8 +703,8 @@ body::before {
 /* ========== 生活建议模块 ========== */
 
 .advice-section {
-  margin-top: 36px;
-  padding-top: 36px;
+  margin-top: 24px;
+  padding-top: 24px;
   border-top: 1px solid var(--color-border-light);
   animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -841,5 +842,188 @@ body::before {
 
   .advice-card:last-child:nth-child(odd) {
     grid-column: span 1;
+  }
+}
+
+/* ========== 左右分栏布局 ========== */
+
+/* 左侧上传面板 */
+.panel-left {
+  position: sticky;
+  top: 40px;
+}
+
+.panel-left .upload-grid {
+  grid-template-columns: 1fr;
+}
+
+.panel-left .upload-area {
+  padding: 28px 20px;
+}
+
+.panel-left .upload-icon {
+  width: 44px;
+  height: 44px;
+}
+
+.panel-left .upload-text {
+  font-size: 15px;
+}
+
+.panel-left .submit-btn {
+  margin-top: 4px;
+  padding: 16px 32px;
+  font-size: 15px;
+}
+
+/* 右侧结果面板 */
+.panel-right {
+  min-height: 480px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  position: relative;
+  overscroll-behavior: contain;
+  padding-bottom: 240px;
+}
+
+/* 右侧面板自定义滚动条 */
+.panel-right::-webkit-scrollbar {
+  width: 5px;
+}
+
+.panel-right::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel-right::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 100px;
+}
+
+.panel-right::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+.panel-right .message {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.panel-right .message.hidden {
+  display: none;
+}
+
+/* 空状态 */
+.panel-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  min-height: 460px;
+  transition: var(--transition-base);
+}
+
+.panel-empty-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 28px;
+  color: var(--color-primary);
+  opacity: 0.4;
+}
+
+.panel-empty-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes pulseRings {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+.panel-empty-icon circle {
+  animation: pulseRings 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.panel-empty-icon circle:nth-child(2) {
+  animation-delay: 0.6s;
+}
+
+.panel-empty-icon circle:nth-child(3) {
+  animation-delay: 1.2s;
+}
+
+.panel-empty-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.panel-empty-text {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  text-align: center;
+}
+
+/* 响应式：窄屏时恢复上下布局 */
+@media (max-width: 860px) {
+  .container {
+    max-width: 600px;
+    padding: 40px 28px;
+  }
+
+  .main-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .panel-left {
+    position: static;
+  }
+
+  .panel-left .upload-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .panel-left .upload-area {
+    padding: 40px 24px;
+  }
+
+  .panel-left .upload-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .panel-left .upload-text {
+    font-size: 17px;
+  }
+
+  .panel-left .submit-btn {
+    margin-top: 12px;
+  }
+
+  .panel-right {
+    min-height: auto;
+    max-height: none;
+    overflow-y: visible;
+    padding-bottom: 0;
+  }
+
+  .panel-empty {
+    min-height: 280px;
+    padding: 40px 24px;
+  }
+
+  .panel-empty-icon {
+    width: 60px;
+    height: 60px;
   }
 }

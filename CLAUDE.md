@@ -8,8 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Key Commands
 
+使用 conda 环境 `tf` 中的 Python（路径：`E:\miniconda3\envs\tf\python.exe`），已将 `E:\miniconda3\envs\tf` 加入 `PATH` 前置。
+
 ```bash
-# Install dependencies
+# Install dependencies (已有环境，无需重装)
 pip install -r requirements.txt
 
 # Train model (MobileNetV2 default, set MODEL_VERSION=v3 for V3Small)

@@ -26,86 +26,106 @@
     </header>
 
     <main class="main-content">
-      <form id="upload-form" class="upload-form">
-        <div class="upload-grid">
-          <div class="upload-area" id="face-area">
-            <div class="upload-inner">
-              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-              </svg>
-              <p class="upload-text">面部照片</p>
-              <p class="upload-hint">点击或拖拽上传</p>
-              <input type="file" name="face_image" id="face_image" accept="image/*" required aria-label="上传面部照片">
+      <!-- 左侧面板：图片上传 -->
+      <div class="panel panel-left">
+        <form id="upload-form" class="upload-form">
+          <div class="upload-grid">
+            <div class="upload-area" id="face-area">
+              <div class="upload-inner">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                </svg>
+                <p class="upload-text">面部照片</p>
+                <p class="upload-hint">点击或拖拽上传</p>
+                <input type="file" name="face_image" id="face_image" accept="image/*" required aria-label="上传面部照片">
+              </div>
+              <div class="preview-overlay" id="face-preview-wrap">
+                <img id="face-preview" alt="面部预览">
+              </div>
             </div>
-            <div class="preview-overlay" id="face-preview-wrap">
-              <img id="face-preview" alt="面部预览">
+
+            <div class="upload-area" id="tongue-area">
+              <div class="upload-inner">
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <ellipse cx="12" cy="14" rx="6" ry="8"/>
+                  <path d="M8 14c0-1.5 1-3 4-3s4 1.5 4 3"/>
+                </svg>
+                <p class="upload-text">舌象照片</p>
+                <p class="upload-hint">点击或拖拽上传</p>
+                <input type="file" name="tongue_image" id="tongue_image" accept="image/*" required aria-label="上传舌象照片">
+              </div>
+              <div class="preview-overlay" id="tongue-preview-wrap">
+                <img id="tongue-preview" alt="舌象预览">
+              </div>
             </div>
           </div>
 
-          <div class="upload-area" id="tongue-area">
-            <div class="upload-inner">
-              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <ellipse cx="12" cy="14" rx="6" ry="8"/>
-                <path d="M8 14c0-1.5 1-3 4-3s4 1.5 4 3"/>
-              </svg>
-              <p class="upload-text">舌象照片</p>
-              <p class="upload-hint">点击或拖拽上传</p>
-              <input type="file" name="tongue_image" id="tongue_image" accept="image/*" required aria-label="上传舌象照片">
-            </div>
-            <div class="preview-overlay" id="tongue-preview-wrap">
-              <img id="tongue-preview" alt="舌象预览">
-            </div>
-          </div>
-        </div>
-
-        <button type="submit" id="submit-btn" class="submit-btn">
-          <span class="btn-text">开始分析</span>
-          <svg class="btn-loader" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="12" cy="12" r="10" opacity="0.25"/>
-            <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </form>
-
-      <div id="message" class="message" role="alert" aria-live="polite"></div>
-
-      <div id="result" class="result hidden">
-        <div class="result-header">
-          <svg class="result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
-          <h2>分析结果</h2>
-        </div>
-
-        <div class="result-content">
-          <div class="result-label" id="label"></div>
-          <div id="probabilities" class="probabilities"></div>
-        </div>
+          <button type="submit" id="submit-btn" class="submit-btn">
+            <span class="btn-text">开始分析</span>
+            <svg class="btn-loader" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" opacity="0.25"/>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </form>
       </div>
 
-      <div id="advice-section" class="advice-section hidden">
-        <div class="advice-header">
-          <svg class="advice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          <h2>生活建议</h2>
+      <!-- 右侧面板：分析结果 -->
+      <div class="panel panel-right">
+        <!-- 空状态（初始展示） -->
+        <div id="panel-empty" class="panel-empty">
+          <div class="panel-empty-icon">
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="40" cy="40" r="36" stroke="currentColor" stroke-width="1.5" opacity="0.2"/>
+              <circle cx="40" cy="40" r="24" stroke="currentColor" stroke-width="1.5" opacity="0.35"/>
+              <circle cx="40" cy="40" r="12" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M40 28V40L48 48" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3 class="panel-empty-title">等待分析</h3>
+          <p class="panel-empty-text">请上传面部与舌象照片<br>点击「开始分析」查看健康评估</p>
         </div>
 
-        <div class="advice-tabs">
-          <button class="advice-tab active" data-tab="rule" id="tab-rule">标准建议</button>
-          <button class="advice-tab" data-tab="ai" id="tab-ai" disabled>
-            AI 建议
-            <span class="tab-loading" id="ai-loading"></span>
-          </button>
+        <div id="message" class="message hidden" role="alert" aria-live="polite"></div>
+
+        <div id="result" class="result hidden">
+          <div class="result-header">
+            <svg class="result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            <h2>分析结果</h2>
+          </div>
+
+          <div class="result-content">
+            <div class="result-label" id="label"></div>
+            <div id="probabilities" class="probabilities"></div>
+          </div>
         </div>
 
-        <div class="advice-content" id="advice-rule">
-          <div class="advice-grid" id="rule-grid"></div>
-        </div>
+        <div id="advice-section" class="advice-section hidden">
+          <div class="advice-header">
+            <svg class="advice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <h2>生活建议</h2>
+          </div>
 
-        <div class="advice-content hidden" id="advice-ai">
-          <div class="advice-grid" id="ai-grid"></div>
+          <div class="advice-tabs">
+            <button class="advice-tab active" data-tab="rule" id="tab-rule">标准建议</button>
+            <button class="advice-tab" data-tab="ai" id="tab-ai" disabled>
+              AI 建议
+              <span class="tab-loading" id="ai-loading"></span>
+            </button>
+          </div>
+
+          <div class="advice-content" id="advice-rule">
+            <div class="advice-grid" id="rule-grid"></div>
+          </div>
+
+          <div class="advice-content hidden" id="advice-ai">
+            <div class="advice-grid" id="ai-grid"></div>
+          </div>
         </div>
       </div>
     </main>
