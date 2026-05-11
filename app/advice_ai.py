@@ -17,7 +17,7 @@ SYSTEM_PROMPT = """你是一位基于中医养生和现代医学的健康顾问�
 4. 只返回JSON，不要有其他文字"""
 
 
-def build_user_prompt(label, probabilities):
+def build_user_prompt(label: str, probabilities: dict) -> str:
     return f"""用户健康检测结果：
 - 综合判定：{label}
 - 各维度概率：{json.dumps(probabilities, ensure_ascii=False)}
@@ -25,7 +25,7 @@ def build_user_prompt(label, probabilities):
 请根据上述结果，从饮食调理、作息建议、运动指导、中医调理、心理调节五个维度给出生活建议。"""
 
 
-def generate_ai_advice(label, probabilities):
+def generate_ai_advice(label: str, probabilities: dict) -> dict:
     """调用 DeepSeek API 生成 AI 生活建议"""
     api_key = os.environ.get("DEEPSEEK_API_KEY")
     if not api_key:
