@@ -1,0 +1,56 @@
+@startuml
+title 用户完整操作流程
+
+|用户|
+start
+:选择面部照片;
+:选择舌象照片;
+:点击「开始分析」按钮;
+
+|系统|
+:显示顶部进度条动画;
+:左侧按钮进入 loading 态;
+:POST /predict 发送图片数据;
+
+:接收面部与舌象图片;
+:图像预处理\n(Resize 224×224, 归一化, 扩维);
+:调用 TensorFlow 模型推理;
+:argmax 获取类别标签;
+:get_rule_advice() 获取规则建议;
+:组装 JSON 响应;
+
+|用户|
+:进度条完成消失;
+:看到分类结果标签;
+:看到概率柱状图逐条动画;
+:浏览标准建议卡片;
+
+|系统|
+:后台异步 fetch /advice/ai;
+if (DEEPSEEK_API_KEY 配置?) then (是)
+  :调用 DeepSeek Chat API;
+  if (JSON 解析成功?) then (是)
+    :渲染 AI 建议内容;
+    :AI 标签恢复可用;
+  else (否)
+    :AI 标签显示提示文字;
+    :保持禁用状态;
+  endif
+else (否)
+  :AI 标签显示提示文字;
+  :保持禁用状态;
+endif
+
+|用户|
+:点击「AI 建议」标签;
+if (AI 数据已就绪?) then (是)
+  :查看 AI 个性化建议;
+  :对比标准建议与 AI 建议;
+else (否)
+  :看到不可用提示;
+  :继续使用标准建议;
+endif
+
+stop
+
+@enduml
