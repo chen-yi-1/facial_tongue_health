@@ -1,0 +1,52 @@
+@startuml
+title /predict 接口调用时序
+
+actor 用户 as User
+participant "浏览器\n(JS Fetch)" as Browser
+participant "Flask Router\napp/app.py" as Flask
+participant "Model Inference\n(TensorFlow)" as Model
+participant "Rule Advice\nEngine" as RuleEngine
+database "uploads/" as Upload
+
+User -> Browser: 选择面/舌图片\n点击「开始分析」
+activate Browser
+
+Browser -> Flask: POST /predict\nFormData(face, tongue)
+activate Flask
+
+Flask -> Upload: save face.jpg, tongue.jpg
+activate Upload
+Upload --> Flask: saved paths
+deactivate Upload
+
+Flask -> Model: preprocess_image(face_path)\npreprocess_image(tongue_path)
+activate Model
+note right of Model
+  Resize 224×224
+  归一化 [0,1]
+  扩维 (1,224,224,3)
+end note
+Model --> Flask: face_arr, tongue_arr
+
+Flask -> Model: model.predict((face_arr, tongue_arr))
+Model --> Flask: Softmax probabilities [p1, p2, p3]
+deactivate Model
+
+Flask -> Flask: argmax → label\nCLASS_NAMES[idx]
+
+Flask -> RuleEngine: get_rule_advice(label)
+activate RuleEngine
+RuleEngine --> Flask: {饮食调理, 作息建议, 运动指导, 中医调理, 心理调节}
+deactivate RuleEngine
+
+Flask -> Flask: 组装 JSON\n{success, label, probabilities, advice:{rule}}
+
+Flask --> Browser: HTTP 200 JSON Response
+deactivate Flask
+
+Browser -> Browser: 渲染结果标签\n概率柱状图动画\n标准建议卡片
+
+Browser --> User: 展示分析结果
+deactivate Browser
+
+@enduml
