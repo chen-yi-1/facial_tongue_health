@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const aiGrid = document.getElementById('ai-grid');
   const tabRule = document.getElementById('tab-rule');
   const tabAi = document.getElementById('tab-ai');
-  const aiLoading = document.getElementById('ai-loading');
 
   let faceObjectUrl = null;
   let tongueObjectUrl = null;
