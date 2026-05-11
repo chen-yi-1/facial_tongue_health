@@ -51,6 +51,9 @@ saved_models/
 reports/
 test_report_api.json
 
+# Environment variables
+.env
+
 # OS
 .DS_Store
 Thumbs.db
