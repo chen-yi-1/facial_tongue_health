@@ -195,75 +195,75 @@ document.addEventListener('DOMContentLoaded', function () {
         resultDiv.classList.add('hidden');
       });
   });
-});
 
-/* ========== 生活建议 ========== */
+  /* ========== 生活建议 ========== */
 
-const ADVICE_ICONS = {
-  '饮食调理': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
-  '作息建议': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
-  '运动指导': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-  '中医调理': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.8 2.3A18 18 0 0 1 12 2a18 18 0 0 1 7.2.3"/><path d="M12 2v20"/><path d="M12 12l-2-2"/><path d="M12 12l2-2"/></svg>',
-  '心理调节': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
-};
+  const ADVICE_ICONS = {
+    '饮食调理': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>',
+    '作息建议': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    '运动指导': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+    '中医调理': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.8 2.3A18 18 0 0 1 12 2a18 18 0 0 1 7.2.3"/><path d="M12 2v20"/><path d="M12 12l-2-2"/><path d="M12 12l2-2"/></svg>',
+    '心理调节': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  };
 
-function renderAdvice(type, adviceData) {
-  const grid = type === 'rule' ? ruleGrid : aiGrid;
-  const dimensions = ['饮食调理', '作息建议', '运动指导', '中医调理', '心理调节'];
-  grid.innerHTML = '';
+  function renderAdvice(type, adviceData) {
+    const grid = type === 'rule' ? ruleGrid : aiGrid;
+    const dimensions = ['饮食调理', '作息建议', '运动指导', '中医调理', '心理调节'];
+    grid.innerHTML = '';
 
-  dimensions.forEach((dim) => {
-    const text = adviceData[dim] || '暂无建议';
-    const card = document.createElement('div');
-    card.className = 'advice-card';
-    card.innerHTML = `
-      <div class="advice-card-header">
-        <span class="advice-card-icon" style="color: var(--color-primary);">${ADVICE_ICONS[dim] || ''}</span>
-        <span class="advice-card-title">${dim}</span>
-      </div>
-      <p class="advice-card-text">${text}</p>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-function fetchAiAdvice(label, probabilities) {
-  tabAi.classList.add('loading');
-  tabAi.disabled = true;
-
-  fetch('/advice/ai', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ label, probabilities }),
-  })
-    .then((resp) => resp.json())
-    .then((data) => {
-      tabAi.classList.remove('loading');
-      if (data.success && data.advice && data.advice.ai) {
-        renderAdvice('ai', data.advice.ai);
-        tabAi.disabled = false;
-      } else {
-        tabAi.title = 'AI 建议暂不可用';
-      }
-    })
-    .catch(() => {
-      tabAi.classList.remove('loading');
-      tabAi.title = 'AI 建议加载失败';
+    dimensions.forEach((dim) => {
+      const text = adviceData[dim] || '暂无建议';
+      const card = document.createElement('div');
+      card.className = 'advice-card';
+      card.innerHTML = `
+        <div class="advice-card-header">
+          <span class="advice-card-icon" style="color: var(--color-primary);">${ADVICE_ICONS[dim] || ''}</span>
+          <span class="advice-card-title">${dim}</span>
+        </div>
+        <p class="advice-card-text">${text}</p>
+      `;
+      grid.appendChild(card);
     });
-}
+  }
 
-// Tab 切换
-tabRule.addEventListener('click', () => {
-  tabRule.classList.add('active');
-  tabAi.classList.remove('active');
-  document.getElementById('advice-rule').classList.remove('hidden');
-  document.getElementById('advice-ai').classList.add('hidden');
-});
+  function fetchAiAdvice(label, probabilities) {
+    tabAi.classList.add('loading');
+    tabAi.disabled = true;
 
-tabAi.addEventListener('click', () => {
-  if (tabAi.disabled) return;
-  tabAi.classList.add('active');
-  tabRule.classList.remove('active');
-  document.getElementById('advice-rule').classList.add('hidden');
-  document.getElementById('advice-ai').classList.remove('hidden');
+    fetch('/advice/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label, probabilities }),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        tabAi.classList.remove('loading');
+        if (data.success && data.advice && data.advice.ai) {
+          renderAdvice('ai', data.advice.ai);
+          tabAi.disabled = false;
+        } else {
+          tabAi.title = 'AI 建议暂不可用';
+        }
+      })
+      .catch(() => {
+        tabAi.classList.remove('loading');
+        tabAi.title = 'AI 建议加载失败';
+      });
+  }
+
+  // Tab 切换
+  tabRule.addEventListener('click', () => {
+    tabRule.classList.add('active');
+    tabAi.classList.remove('active');
+    document.getElementById('advice-rule').classList.remove('hidden');
+    document.getElementById('advice-ai').classList.add('hidden');
+  });
+
+  tabAi.addEventListener('click', () => {
+    if (tabAi.disabled) return;
+    tabAi.classList.add('active');
+    tabRule.classList.remove('active');
+    document.getElementById('advice-rule').classList.add('hidden');
+    document.getElementById('advice-ai').classList.remove('hidden');
+  });
 });
