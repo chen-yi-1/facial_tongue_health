@@ -1,0 +1,68 @@
+@startuml
+!define RECTANGLE class
+
+skinparam component {
+  BackgroundColor #F0FDFA
+  BorderColor #0D9488
+  FontSize 13
+}
+
+skinparam interface {
+  BackgroundColor #EEF2FF
+  BorderColor #6366F1
+}
+
+skinparam database {
+  BackgroundColor #FFF7ED
+  BorderColor #F59E0B
+}
+
+package "前端展示层" {
+  [浏览器\nHTML/CSS/JS] as Browser
+}
+
+package "Flask 应用层" {
+  [Flask Router\n路由分发] as Router
+  [Rule Advice Engine\n规则建议引擎] as RuleEngine
+  [AI Advice Module\nDeepSeek 调用] as AIModule
+}
+
+package "算法推理层" {
+  [Model Inference\nTensorFlow] as Model
+}
+
+cloud "外部服务" {
+  [DeepSeek API] as DeepSeek
+}
+
+database "数据存储层" {
+  [uploads/] as Uploads
+  [saved_models/] as SavedModels
+}
+
+Browser --> Router : HTTP Request\n(GET /, POST /predict,\nPOST /advice/ai)
+Router --> Model : load_model()\npredict()
+Router --> RuleEngine : get_rule_advice(label)
+Router --> AIModule : generate_ai_advice()
+AIModule --> DeepSeek : REST API\nBearer Token
+Model --> SavedModels : model load
+Router --> Uploads : save uploaded files
+
+note right of Router
+  核心调度层
+  app/app.py
+end note
+
+note bottom of RuleEngine
+  app/advice_rules.py
+  3类×5维=15条规则
+  来源：国家卫健委、中医药管理局
+end note
+
+note bottom of AIModule
+  app/advice_ai.py
+  DeepSeek Chat API
+  JSON 格式约束
+end note
+
+@enduml
