@@ -30,10 +30,12 @@ ADVICE_RULES = {
 DIMENSIONS = ["饮食调理", "作息建议", "运动指导", "中医调理", "心理调节"]
 
 
-def get_rule_advice(label):
-    """根据分类标签返回对应的规则建议"""
-    return ADVICE_RULES.get(label, ADVICE_RULES["亚健康"])
+def get_rule_advice(label: str) -> dict[str, str]:
+    """根据分类标签返回对应的规则建议。
 
-
-def get_all_labels():
-    return list(ADVICE_RULES.keys())
+    Raises:
+        KeyError: 当 label 不在 ADVICE_RULES 的键中时抛出。
+    """
+    if label not in ADVICE_RULES:
+        raise KeyError(f"未知的健康状态标签: {label}，可选值: {list(ADVICE_RULES.keys())}")
+    return ADVICE_RULES[label]
