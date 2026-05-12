@@ -24,7 +24,9 @@ SYSTEM_PROMPT = """你是一位基于中医养生和现代医学的健康顾问�
 1. 每条建议30-80字，具体可操作，不说空话
 2. 语气温和专业，有同理心
 3. 以JSON格式返回，key为维度名称，value为建议内容
-4. 只返回JSON，不要有其他文字"""
+4. 只返回JSON，不要有其他文字
+5. 当用户健康检测结果为"不健康"时，建议内容以"及时就医"为前置条件。
+"""
 
 
 def build_user_prompt(label: str, probabilities: dict) -> str:
